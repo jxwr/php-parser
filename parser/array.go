@@ -10,7 +10,7 @@ func (p *Parser) parseArrayLookup(e ast.Expression) ast.Expression {
 	switch Typ := p.peek().Typ; Typ {
 	case token.ArrayLookupOperatorRight, token.BlockBegin:
 		p.expect(token.ArrayLookupOperatorRight, token.BlockEnd)
-		return ast.ArrayAppendExpression{Array: e}
+		return &ast.ArrayAppendExpression{Array: e}
 	}
 	p.next()
 	expr := &ast.ArrayLookupExpression{

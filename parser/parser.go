@@ -73,7 +73,7 @@ TokenLoop:
 func (p *Parser) parseNode() ast.Node {
 	switch p.current.Typ {
 	case token.HTML:
-		return ast.Echo(ast.Literal{Type: ast.String, Value: p.current.Val})
+		return ast.Echo(&ast.Literal{Type: ast.String, Value: p.current.Val})
 	case token.PHPBegin:
 		return nil
 	case token.PHPEnd:

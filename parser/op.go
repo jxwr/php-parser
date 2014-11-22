@@ -64,7 +64,7 @@ func (p *Parser) newBinaryOperation(operator token.Item, expr1, expr2 ast.Expres
 	case token.AmpersandOperator, token.BitwiseXorOperator, token.BitwiseOrOperator, token.BitwiseShiftOperator:
 		t = ast.AnyType
 	}
-	return ast.BinaryExpression{
+	return &ast.BinaryExpression{
 		Type:       t,
 		Antecedent: expr1,
 		Subsequent: expr2,
@@ -105,14 +105,14 @@ func (p *Parser) parseTernaryOperation(lhs ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseUnaryExpressionRight(operand ast.Expression, operator token.Item) ast.Expression {
-	return ast.UnaryExpression{
+	return &ast.UnaryExpression{
 		Operand:  operand,
 		Operator: operator.Val,
 	}
 }
 
 func (p *Parser) parseUnaryExpressionLeft(operand ast.Expression, operator token.Item) ast.Expression {
-	return ast.UnaryExpression{
+	return &ast.UnaryExpression{
 		Operand:   operand,
 		Operator:  operator.Val,
 		Preceding: true,

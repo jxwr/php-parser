@@ -29,7 +29,7 @@ func (p *Parser) parseInstantiation() ast.Expression {
 	return expr
 }
 
-func (p *Parser) parseClass() ast.Class {
+func (p *Parser) parseClass() *ast.Class {
 	if p.current.Typ == token.Abstract {
 		p.expect(token.Class)
 	}
@@ -57,7 +57,7 @@ func (p *Parser) parseClass() ast.Class {
 		}
 	}
 	p.expect(token.BlockBegin)
-	return p.parseClassFields(ast.Class{Name: name})
+	return p.parseClassFields(&ast.Class{Name: name})
 }
 
 func (p *Parser) parseObjectLookup(r ast.Expression) (expr ast.Expression) {
@@ -72,7 +72,7 @@ func (p *Parser) parseObjectLookup(r ast.Expression) (expr ast.Expression) {
 	case token.VariableOperator:
 		prop.Name = p.parseExpression()
 	case token.Identifier:
-		prop.Name = ast.Identifier{Value: p.current.Val}
+		prop.Name = &ast.Identifier{Value: p.current.Val}
 	}
 	expr = prop
 	switch pk := p.peek(); pk.Typ {
@@ -109,7 +109,7 @@ func (p *Parser) parseAbstract() bool {
 	return false
 }
 
-func (p *Parser) parseClassFields(c ast.Class) ast.Class {
+func (p *Parser) parseClassFields(c *ast.Class) *ast.Class {
 	// Starting on BlockBegin
 	c.Methods = make([]ast.Method, 0)
 	c.Properties = make([]ast.Property, 0)

@@ -3,6 +3,7 @@ package ast
 /// Interfaces
 
 type Node interface {
+	Accept(Visitor)
 }
 
 type Expression interface {
@@ -142,6 +143,25 @@ func (n ShellCommand) exprNode()           {}
 func (n Literal) exprNode()                {}
 func (n Include) exprNode()                {}
 func (n AnonymousFunction) exprNode()      {}
+
+func (n *Identifier) Accept(v Visitor)             { v.VisitIdentifier(n) }
+func (n *Variable) Accept(v Visitor)               { v.VisitVariable(n) }
+func (n *BinaryExpression) Accept(v Visitor)       { v.VisitBinaryExpression(n) }
+func (n *TernaryExpression) Accept(v Visitor)      { v.VisitTernaryExpression(n) }
+func (n *UnaryExpression) Accept(v Visitor)        { v.VisitUnaryExpression(n) }
+func (n *NewExpression) Accept(v Visitor)          { v.VisitNewExpression(n) }
+func (n *PropertyExpression) Accept(v Visitor)     { v.VisitPropertyExpression(n) }
+func (n *ClassExpression) Accept(v Visitor)        { v.VisitClassExpression(n) }
+func (n *AssignmentExpression) Accept(v Visitor)   { v.VisitAssignmentExpression(n) }
+func (n *FunctionCallExpression) Accept(v Visitor) { v.VisitFunctionCallExpression(n) }
+func (n *ConstantExpression) Accept(v Visitor)     { v.VisitConstantExpression(n) }
+func (n *ArrayExpression) Accept(v Visitor)        { v.VisitArrayExpression(n) }
+func (n *ArrayLookupExpression) Accept(v Visitor)  { v.VisitArrayLookupExpression(n) }
+func (n *ArrayAppendExpression) Accept(v Visitor)  { v.VisitArrayAppendExpression(n) }
+func (n *ShellCommand) Accept(v Visitor)           { v.VisitShellCommand(n) }
+func (n *Literal) Accept(v Visitor)                { v.VisitLiteral(n) }
+func (n *Include) Accept(v Visitor)                { v.VisitInclude(n) }
+func (n *AnonymousFunction) Accept(v Visitor)      { v.VisitAnonymousFunction(n) }
 
 /// Statements
 
@@ -352,3 +372,32 @@ func (n CatchStmt) stmtNode()                 {}
 func (n ForeachStmt) stmtNode()               {}
 func (n ListStatement) stmtNode()             {}
 func (n StaticVariableDeclaration) stmtNode() {}
+
+func (n *GlobalDeclaration) Accept(v Visitor)         {}
+func (n *ExpressionStmt) Accept(v Visitor)            {}
+func (n *EmptyStatement) Accept(v Visitor)            {}
+func (n *EchoStmt) Accept(v Visitor)                  {}
+func (n *ReturnStmt) Accept(v Visitor)                {}
+func (n *BreakStmt) Accept(v Visitor)                 {}
+func (n *ContinueStmt) Accept(v Visitor)              {}
+func (n *ThrowStmt) Accept(v Visitor)                 {}
+func (n *IncludeStmt) Accept(v Visitor)               {}
+func (n *ExitStmt) Accept(v Visitor)                  {}
+func (n *FunctionCallStmt) Accept(v Visitor)          {}
+func (n *FunctionStmt) Accept(v Visitor)              {}
+func (n *FunctionDefinition) Accept(v Visitor)        {}
+func (n *Interface) Accept(v Visitor)                 {}
+func (n *DeclareBlock) Accept(v Visitor)              {}
+func (n *Class) Accept(v Visitor)                     {}
+func (n *Method) Accept(v Visitor)                    {}
+func (n *Block) Accept(v Visitor)                     {}
+func (n *IfStmt) Accept(v Visitor)                    {}
+func (n *SwitchStmt) Accept(v Visitor)                {}
+func (n *ForStmt) Accept(v Visitor)                   {}
+func (n *WhileStmt) Accept(v Visitor)                 {}
+func (n *DoWhileStmt) Accept(v Visitor)               {}
+func (n *TryStmt) Accept(v Visitor)                   {}
+func (n *CatchStmt) Accept(v Visitor)                 {}
+func (n *ForeachStmt) Accept(v Visitor)               {}
+func (n *ListStatement) Accept(v Visitor)             {}
+func (n *StaticVariableDeclaration) Accept(v Visitor) {}

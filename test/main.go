@@ -21,10 +21,10 @@ func main() {
 	nodes, _ := parser.Parse()
 	for _, node := range nodes {
 		switch v := node.(type) {
-		case ast.EchoStmt:
-			s := v.Expressions[0].(ast.Literal)
+		case *ast.EchoStmt:
+			s := v.Expressions[0].(*ast.Literal)
 			fmt.Println(strings.TrimSpace(s.Value))
-		case ast.ExpressionStmt:
+		case *ast.ExpressionStmt:
 			call := v.Expression.(*ast.FunctionCallExpression)
 			fmt.Println(call)
 		case *ast.IfStmt:

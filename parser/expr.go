@@ -173,7 +173,7 @@ func (p *Parser) parseAssignmentOperation(lhs, rhs ast.Expression, operator toke
 	if !ok {
 		p.errorf("%s is not assignable", lhs)
 	}
-	expr = ast.AssignmentExpression{
+	expr = &ast.AssignmentExpression{
 		Assignee: assignee,
 		Operator: operator.Val,
 		Value:    rhs,
@@ -323,7 +323,7 @@ func (p *Parser) parseVariable() ast.Expression {
 }
 
 func (p *Parser) parseInclude() ast.Expression {
-	inc := ast.Include{Expressions: make([]ast.Expression, 0)}
+	inc := &ast.Include{Expressions: make([]ast.Expression, 0)}
 	for {
 		inc.Expressions = append(inc.Expressions, p.parseNextExpression())
 		if p.peek().Typ != token.Comma {
@@ -350,7 +350,7 @@ func (p *Parser) parseIdentifier() (expr ast.Expression) {
 	case token.OpenParen:
 		// Function calls are okay here because we know they came with
 		// a non-dynamic identifier.
-		expr = p.parseFunctionCall(ast.Identifier{Value: p.current.Val})
+		expr = p.parseFunctionCall(&ast.Identifier{Value: p.current.Val})
 		p.next()
 	case token.ScopeResolutionOperator:
 		classIdent := p.current.Val
@@ -359,7 +359,7 @@ func (p *Parser) parseIdentifier() (expr ast.Expression) {
 		expr = ast.NewClassExpression(classIdent, p.parseOperand())
 		p.next()
 	default:
-		expr = ast.ConstantExpression{
+		expr = &ast.ConstantExpression{
 			Variable: ast.NewVariable(p.current.Val),
 		}
 		p.next()

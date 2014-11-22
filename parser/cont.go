@@ -13,7 +13,7 @@ func (p *Parser) parseIf() *ast.IfStmt {
 
 	p.next()
 	n.TrueBranch = p.parseControlBlock(token.EndIf, token.ElseIf, token.Else)
-	n.FalseBranch = ast.Block{}
+	n.FalseBranch = &ast.Block{}
 
 	blockStyle := false
 	switch p.current.Typ {
@@ -138,7 +138,7 @@ func (p *Parser) parseSwitch() ast.Statement {
 			p.next()
 			stmt.DefaultCase = p.parseSwitchBlock()
 		case token.BlockEnd, token.EndSwitch:
-			return stmt
+			return &stmt
 		default:
 			p.errorf("Unexpected token. in switch statement:", p.current)
 			return nil
