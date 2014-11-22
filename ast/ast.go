@@ -400,5 +400,6 @@ func (n *TryStmt) Accept(v Visitor)            { v.VisitTryStmt(n) }
 func (n *CatchStmt) Accept(v Visitor)          { v.VisitCatchStmt(n) }
 func (n *ForeachStmt) Accept(v Visitor)        { v.VisitForeachStmt(n) }
 func (n *ListStatement) Accept(v Visitor)      { v.VisitListStatement(n) }
-
-func (n *StaticVariableDeclaration) Accept(v Visitor) {}
+func (n *StaticVariableDeclaration) Accept(v Visitor) {
+	v.VisitStaticVariableDeclaration(n)
+}
