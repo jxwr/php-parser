@@ -100,7 +100,7 @@ func (p *Parser) parseTernaryOperation(lhs ast.Expression) ast.Expression {
 		Condition: lhs,
 		True:      truthy,
 		False:     falsy,
-		Type:      truthy.EvaluatesTo() | falsy.EvaluatesTo(),
+		Type:      ast.AnyType,
 	}
 }
 
