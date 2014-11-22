@@ -5,12 +5,14 @@ package ast
 type Node interface {
 }
 
-type Statement interface {
-	Node
-}
-
 type Expression interface {
 	Node
+	exprNode()
+}
+
+type Statement interface {
+	Node
+	stmtNode()
 }
 
 type Assignable interface {
@@ -91,6 +93,56 @@ type ArrayAppendExpression struct {
 	Array Expression
 }
 
+type Literal struct {
+	Type  Type
+	Value string
+}
+
+type ShellCommand struct {
+	Command string
+}
+
+type Include struct {
+	Expressions []Expression
+}
+
+type PropertyExpression struct {
+	Receiver Expression
+	Name     Expression
+	Type     Type
+}
+
+type ClassExpression struct {
+	Receiver   Expression
+	Expression Expression
+	Type       Type
+}
+
+type AnonymousFunction struct {
+	ClosureVariables []FunctionArgument
+	Arguments        []FunctionArgument
+	Body             *Block
+}
+
+func (n Identifier) exprNode()             {}
+func (n Variable) exprNode()               {}
+func (n BinaryExpression) exprNode()       {}
+func (n TernaryExpression) exprNode()      {}
+func (n UnaryExpression) exprNode()        {}
+func (n NewExpression) exprNode()          {}
+func (n PropertyExpression) exprNode()     {}
+func (n ClassExpression) exprNode()        {}
+func (n AssignmentExpression) exprNode()   {}
+func (n FunctionCallExpression) exprNode() {}
+func (n ConstantExpression) exprNode()     {}
+func (n ArrayExpression) exprNode()        {}
+func (n ArrayLookupExpression) exprNode()  {}
+func (n ArrayAppendExpression) exprNode()  {}
+func (n ShellCommand) exprNode()           {}
+func (n Literal) exprNode()                {}
+func (n Include) exprNode()                {}
+func (n AnonymousFunction) exprNode()      {}
+
 /// Statements
 
 type GlobalDeclaration struct {
@@ -128,10 +180,6 @@ type IncludeStmt struct {
 	Include
 }
 
-type Include struct {
-	Expressions []Expression
-}
-
 type ExitStmt struct {
 	Expression Expression
 }
@@ -148,12 +196,6 @@ type Block struct {
 type FunctionStmt struct {
 	*FunctionDefinition
 	Body *Block
-}
-
-type AnonymousFunction struct {
-	ClosureVariables []FunctionArgument
-	Arguments        []FunctionArgument
-	Body             *Block
 }
 
 type FunctionDefinition struct {
@@ -193,18 +235,6 @@ type Property struct {
 	Visibility     Visibility
 	Type           Type
 	Initialization Expression
-}
-
-type PropertyExpression struct {
-	Receiver Expression
-	Name     Expression
-	Type     Type
-}
-
-type ClassExpression struct {
-	Receiver   Expression
-	Expression Expression
-	Type       Type
 }
 
 type Method struct {
@@ -271,11 +301,6 @@ type CatchStmt struct {
 	CatchVar   *Variable
 }
 
-type Literal struct {
-	Type  Type
-	Value string
-}
-
 type ForeachStmt struct {
 	Source    Expression
 	Key       *Variable
@@ -283,10 +308,7 @@ type ForeachStmt struct {
 	LoopBlock Statement
 }
 
-type ShellCommand struct {
-	Command string
-}
-
+// list($a, $b, $c) = $my_array;
 type ListStatement struct {
 	Assignees []Assignable
 	Value     Expression
@@ -301,3 +323,32 @@ type DeclareBlock struct {
 	Statements   *Block
 	Declarations []string
 }
+
+func (n GlobalDeclaration) stmtNode()         {}
+func (n ExpressionStmt) stmtNode()            {}
+func (n EmptyStatement) stmtNode()            {}
+func (n EchoStmt) stmtNode()                  {}
+func (n ReturnStmt) stmtNode()                {}
+func (n BreakStmt) stmtNode()                 {}
+func (n ContinueStmt) stmtNode()              {}
+func (n ThrowStmt) stmtNode()                 {}
+func (n IncludeStmt) stmtNode()               {}
+func (n ExitStmt) stmtNode()                  {}
+func (n FunctionCallStmt) stmtNode()          {}
+func (n FunctionStmt) stmtNode()              {}
+func (n FunctionDefinition) stmtNode()        {}
+func (n Interface) stmtNode()                 {}
+func (n DeclareBlock) stmtNode()              {}
+func (n Class) stmtNode()                     {}
+func (n Method) stmtNode()                    {}
+func (n Block) stmtNode()                     {}
+func (n IfStmt) stmtNode()                    {}
+func (n SwitchStmt) stmtNode()                {}
+func (n ForStmt) stmtNode()                   {}
+func (n WhileStmt) stmtNode()                 {}
+func (n DoWhileStmt) stmtNode()               {}
+func (n TryStmt) stmtNode()                   {}
+func (n CatchStmt) stmtNode()                 {}
+func (n ForeachStmt) stmtNode()               {}
+func (n ListStatement) stmtNode()             {}
+func (n StaticVariableDeclaration) stmtNode() {}

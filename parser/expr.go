@@ -53,8 +53,6 @@ func (p *Parser) parseExpression() (expr ast.Expression) {
 	switch p.current.Typ {
 	case token.IgnoreErrorOperator:
 		return p.parseNextExpression()
-	case token.List:
-		expr = p.parseList()
 	case
 		token.UnaryOperator,
 		token.NegationOperator,

@@ -48,7 +48,8 @@ func (p *Parser) parseStmt() ast.Statement {
 		if p.peek().Typ == token.ScopeResolutionOperator {
 			expr := p.parseExpression()
 			p.expectStmtEnd()
-			return expr
+			stmt := &ast.ExpressionStmt{expr}
+			return stmt
 		}
 		s := &ast.StaticVariableDeclaration{Declarations: make([]ast.Expression, 0)}
 		for {
@@ -171,6 +172,8 @@ func (p *Parser) parseStmt() ast.Statement {
 		}
 		p.expectStmtEnd()
 		return stmt
+	case token.List:
+		return p.parseList()
 	case token.Try:
 		stmt := &ast.TryStmt{}
 		stmt.TryBlock = p.parseBlock()

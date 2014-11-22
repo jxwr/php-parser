@@ -66,7 +66,7 @@ ArrayLoop:
 	return &ast.ArrayExpression{Pairs: pairs}
 }
 
-func (p *Parser) parseList() ast.Expression {
+func (p *Parser) parseList() ast.Statement {
 	l := &ast.ListStatement{
 		Assignees: make([]ast.Assignable, 0),
 	}
