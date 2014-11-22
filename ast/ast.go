@@ -373,31 +373,32 @@ func (n ForeachStmt) stmtNode()               {}
 func (n ListStatement) stmtNode()             {}
 func (n StaticVariableDeclaration) stmtNode() {}
 
-func (n *GlobalDeclaration) Accept(v Visitor)         {}
-func (n *ExpressionStmt) Accept(v Visitor)            {}
-func (n *EmptyStatement) Accept(v Visitor)            {}
-func (n *EchoStmt) Accept(v Visitor)                  {}
-func (n *ReturnStmt) Accept(v Visitor)                {}
-func (n *BreakStmt) Accept(v Visitor)                 {}
-func (n *ContinueStmt) Accept(v Visitor)              {}
-func (n *ThrowStmt) Accept(v Visitor)                 {}
-func (n *IncludeStmt) Accept(v Visitor)               {}
-func (n *ExitStmt) Accept(v Visitor)                  {}
-func (n *FunctionCallStmt) Accept(v Visitor)          {}
-func (n *FunctionStmt) Accept(v Visitor)              {}
-func (n *FunctionDefinition) Accept(v Visitor)        {}
-func (n *Interface) Accept(v Visitor)                 {}
-func (n *DeclareBlock) Accept(v Visitor)              {}
-func (n *Class) Accept(v Visitor)                     {}
-func (n *Method) Accept(v Visitor)                    {}
-func (n *Block) Accept(v Visitor)                     {}
-func (n *IfStmt) Accept(v Visitor)                    {}
-func (n *SwitchStmt) Accept(v Visitor)                {}
-func (n *ForStmt) Accept(v Visitor)                   {}
-func (n *WhileStmt) Accept(v Visitor)                 {}
-func (n *DoWhileStmt) Accept(v Visitor)               {}
-func (n *TryStmt) Accept(v Visitor)                   {}
-func (n *CatchStmt) Accept(v Visitor)                 {}
-func (n *ForeachStmt) Accept(v Visitor)               {}
-func (n *ListStatement) Accept(v Visitor)             {}
+func (n *GlobalDeclaration) Accept(v Visitor)  { v.VisitGlobalDeclaration(n) }
+func (n *ExpressionStmt) Accept(v Visitor)     { v.VisitExpressionStmt(n) }
+func (n *EmptyStatement) Accept(v Visitor)     { v.VisitEmptyStatement(n) }
+func (n *EchoStmt) Accept(v Visitor)           { v.VisitEchoStmt(n) }
+func (n *ReturnStmt) Accept(v Visitor)         { v.VisitReturnStmt(n) }
+func (n *BreakStmt) Accept(v Visitor)          { v.VisitBreakStmt(n) }
+func (n *ContinueStmt) Accept(v Visitor)       { v.VisitContinueStmt(n) }
+func (n *ThrowStmt) Accept(v Visitor)          { v.VisitThrowStmt(n) }
+func (n *IncludeStmt) Accept(v Visitor)        { v.VisitIncludeStmt(n) }
+func (n *ExitStmt) Accept(v Visitor)           { v.VisitExitStmt(n) }
+func (n *FunctionCallStmt) Accept(v Visitor)   { v.VisitFunctionCallStmt(n) }
+func (n *FunctionStmt) Accept(v Visitor)       { v.VisitFunctionStmt(n) }
+func (n *FunctionDefinition) Accept(v Visitor) { v.VisitFunctionDefinition(n) }
+func (n *Interface) Accept(v Visitor)          { v.VisitInterface(n) }
+func (n *DeclareBlock) Accept(v Visitor)       { v.VisitDeclareBlock(n) }
+func (n *Class) Accept(v Visitor)              { v.VisitClass(n) }
+func (n *Method) Accept(v Visitor)             { v.VisitMethod(n) }
+func (n *Block) Accept(v Visitor)              { v.VisitBlock(n) }
+func (n *IfStmt) Accept(v Visitor)             { v.VisitIfStmt(n) }
+func (n *SwitchStmt) Accept(v Visitor)         { v.VisitSwitchStmt(n) }
+func (n *ForStmt) Accept(v Visitor)            { v.VisitForStmt(n) }
+func (n *WhileStmt) Accept(v Visitor)          { v.VisitWhileStmt(n) }
+func (n *DoWhileStmt) Accept(v Visitor)        { v.VisitDoWhileStmt(n) }
+func (n *TryStmt) Accept(v Visitor)            { v.VisitTryStmt(n) }
+func (n *CatchStmt) Accept(v Visitor)          { v.VisitCatchStmt(n) }
+func (n *ForeachStmt) Accept(v Visitor)        { v.VisitForeachStmt(n) }
+func (n *ListStatement) Accept(v Visitor)      { v.VisitListStatement(n) }
+
 func (n *StaticVariableDeclaration) Accept(v Visitor) {}
