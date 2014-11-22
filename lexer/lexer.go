@@ -167,24 +167,22 @@ func isSpace(r rune) bool {
 	return unicode.IsSpace(r)
 }
 
-func IsKeyword(i token.Token, tokenString string) bool {
-	_, ok := keywordMap[i]
-	return ok && !isNonAlphaOperator(tokenString)
-}
-
-var nonalpha *regexp.Regexp
-
-func init() {
+var (
 	nonalpha = regexp.MustCompile(`^[^a-zA-Z0-9]*$`)
-}
+
+	// keywordMap lists all keywords that should be ignored as a prefix to a longer
+	// identifier.
+	keywordMap = map[token.Token]bool{}
+)
 
 func isNonAlphaOperator(s string) bool {
 	return nonalpha.MatchString(s)
 }
 
-// keywordMap lists all keywords that should be ignored as a prefix to a longer
-// identifier.
-var keywordMap = map[token.Token]bool{}
+func IsKeyword(i token.Token, tokenString string) bool {
+	_, ok := keywordMap[i]
+	return ok && !isNonAlphaOperator(tokenString)
+}
 
 func init() {
 	re := regexp.MustCompile("^[a-zA-Z]+")
