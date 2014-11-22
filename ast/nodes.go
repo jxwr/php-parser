@@ -1,16 +1,5 @@
 package ast
 
-import (
-	"bytes"
-	"fmt"
-	"strings"
-)
-
-// Node encapsulates every AST node.
-type Node interface {
-	String() string
-}
-
 // An Identifier is a raw string that can be used to identify
 // a variable, function, class, constant, property, etc.
 type Identifier struct {
@@ -22,10 +11,6 @@ func (i Identifier) EvaluatesTo() Type {
 	return String
 }
 
-func (i Identifier) String() string {
-	return i.Value
-}
-
 type Variable struct {
 
 	// Name is the identifier for the variable, which may be
@@ -34,16 +19,8 @@ type Variable struct {
 	Type Type
 }
 
-func (v Variable) String() string {
-	return "$" + v.Name.String()
-}
-
 type GlobalDeclaration struct {
 	Identifiers []*Variable
-}
-
-func (g GlobalDeclaration) String() string {
-	return "global"
 }
 
 func (i Variable) AssignableType() Type {
@@ -62,24 +39,8 @@ func NewVariable(name string) *Variable {
 	return &Variable{Name: Identifier{Value: name}, Type: AnyType}
 }
 
-// A statement is an executable piece of code. It may be as simple as
-// a function call or a variable assignment. It also includes things like
-// "if".
-type Statement interface {
-	Node
-}
-
 // EmptyStatement represents a statement that does nothing.
 type EmptyStatement struct {
-}
-
-func (e EmptyStatement) String() string { return "" }
-
-// An Expression is a snippet of code that evaluates to a single value when run
-// and does not represent a program instruction.
-type Expression interface {
-	Node
-	EvaluatesTo() Type
 }
 
 // AnyType is a bitmask of all the valid types.
@@ -94,10 +55,6 @@ type BinaryExpression struct {
 	Operator   string
 }
 
-func (b BinaryExpression) String() string {
-	return b.Operator
-}
-
 func (b BinaryExpression) EvaluatesTo() Type {
 	return b.Type
 }
@@ -105,10 +62,6 @@ func (b BinaryExpression) EvaluatesTo() Type {
 type TernaryExpression struct {
 	Condition, True, False Expression
 	Type                   Type
-}
-
-func (t TernaryExpression) String() string {
-	return "?:"
 }
 
 func (t TernaryExpression) EvaluatesTo() Type {
@@ -123,26 +76,12 @@ type UnaryExpression struct {
 	Preceding bool
 }
 
-func (u UnaryExpression) String() string {
-	if u.Preceding {
-		return u.Operator + u.Operand.String()
-	}
-	return u.Operand.String() + u.Operator
-}
-
 func (u UnaryExpression) EvaluatesTo() Type {
 	return Unknown
 }
 
 type ExpressionStmt struct {
 	Expression
-}
-
-func (e ExpressionStmt) String() string {
-	if e.Expression != nil {
-		return e.Expression.String()
-	}
-	return ""
 }
 
 // Echo returns a new echo statement.
@@ -156,33 +95,17 @@ type EchoStmt struct {
 	Expressions []Expression
 }
 
-func (e EchoStmt) String() string {
-	return "Echo"
-}
-
 // ReturnStmt represents a function return.
 type ReturnStmt struct {
 	Expression
-}
-
-func (r ReturnStmt) String() string {
-	return fmt.Sprintf("return")
 }
 
 type BreakStmt struct {
 	Expression
 }
 
-func (b BreakStmt) String() string {
-	return "break"
-}
-
 type ContinueStmt struct {
 	Expression
-}
-
-func (c ContinueStmt) String() string {
-	return "continue"
 }
 
 type ThrowStmt struct {
@@ -197,20 +120,12 @@ type Include struct {
 	Expressions []Expression
 }
 
-func (i Include) String() string {
-	return "include"
-}
-
 func (i Include) EvaluatesTo() Type {
 	return AnyType
 }
 
 type ExitStmt struct {
 	Expression Expression
-}
-
-func (e ExitStmt) String() string {
-	return "exit"
 }
 
 type NewExpression struct {
@@ -222,10 +137,6 @@ func (n NewExpression) EvaluatesTo() Type {
 	return Object
 }
 
-func (n NewExpression) String() string {
-	return "new"
-}
-
 type AssignmentExpression struct {
 	Assignee Assignable
 	Value    Expression
@@ -234,15 +145,6 @@ type AssignmentExpression struct {
 
 func (a AssignmentExpression) EvaluatesTo() Type {
 	return a.Value.EvaluatesTo()
-}
-
-func (a AssignmentExpression) String() string {
-	return a.Operator
-}
-
-type Assignable interface {
-	Node
-	AssignableType() Type
 }
 
 type FunctionCallStmt struct {
@@ -258,26 +160,14 @@ func (f FunctionCallExpression) EvaluatesTo() Type {
 	return String | Integer | Float | Boolean | Null | Resource | Array | Object
 }
 
-func (f FunctionCallExpression) String() string {
-	return fmt.Sprintf("%s()", f.FunctionName)
-}
-
 type Block struct {
 	Statements []Statement
 	Scope      Scope
 }
 
-func (b Block) String() string {
-	return "{}"
-}
-
 type FunctionStmt struct {
 	*FunctionDefinition
 	Body *Block
-}
-
-func (f FunctionStmt) String() string {
-	return fmt.Sprintf("Func: %s", f.Name)
 }
 
 type AnonymousFunction struct {
@@ -290,27 +180,15 @@ func (a AnonymousFunction) EvaluatesTo() Type {
 	return Function
 }
 
-func (a AnonymousFunction) String() string {
-	return "anonymous function"
-}
-
 type FunctionDefinition struct {
 	Name      string
 	Arguments []FunctionArgument
-}
-
-func (fd FunctionDefinition) String() string {
-	return fmt.Sprintf("function %s( %s )", fd.Name, fd.Arguments)
 }
 
 type FunctionArgument struct {
 	TypeHint string
 	Default  Expression
 	Variable *Variable
-}
-
-func (fa FunctionArgument) String() string {
-	return fmt.Sprintf("Arg: %s", fa.TypeHint)
 }
 
 type Class struct {
@@ -320,10 +198,6 @@ type Class struct {
 	Methods    []Method
 	Properties []Property
 	Constants  []Constant
-}
-
-func (c Class) String() string {
-	return fmt.Sprintf("class %s", c.Name)
 }
 
 type Constant struct {
@@ -342,19 +216,11 @@ type Interface struct {
 	Constants []Constant
 }
 
-func (i Interface) String() string {
-	return fmt.Sprintf("interface %s extends %s", i.Name, strings.Join(i.Inherits, ", "))
-}
-
 type Property struct {
 	Name           string
 	Visibility     Visibility
 	Type           Type
 	Initialization Expression
-}
-
-func (p Property) String() string {
-	return fmt.Sprintf("Prop: %s", p.Name)
 }
 
 func (p Property) AssignableType() Type {
@@ -365,10 +231,6 @@ type PropertyExpression struct {
 	Receiver Expression
 	Name     Expression
 	Type     Type
-}
-
-func (p PropertyExpression) String() string {
-	return fmt.Sprintf("%s->%s", p.Receiver, p.Name)
 }
 
 func (p PropertyExpression) AssignableType() Type {
@@ -396,10 +258,6 @@ func (c ClassExpression) EvaluatesTo() Type {
 	return AnyType
 }
 
-func (c ClassExpression) String() string {
-	return fmt.Sprintf("%s::", c.Receiver)
-}
-
 func (c ClassExpression) AssignableType() Type {
 	return c.Type
 }
@@ -409,17 +267,9 @@ type Method struct {
 	Visibility Visibility
 }
 
-func (m Method) String() string {
-	return m.Name
-}
-
 type MethodCallExpression struct {
 	Receiver Expression
 	*FunctionCallExpression
-}
-
-func (m MethodCallExpression) String() string {
-	return fmt.Sprintf("%s->", m.Receiver)
 }
 
 type Visibility int
@@ -436,27 +286,15 @@ type IfStmt struct {
 	FalseBranch Statement
 }
 
-func (i IfStmt) String() string {
-	return "if"
-}
-
 type SwitchStmt struct {
 	Expression  Expression
 	Cases       []*SwitchCase
 	DefaultCase *Block
 }
 
-func (s SwitchStmt) String() string {
-	return "switch"
-}
-
 type SwitchCase struct {
 	Expression Expression
 	Block      Block
-}
-
-func (s SwitchCase) String() string {
-	return "case"
 }
 
 type ForStmt struct {
@@ -466,26 +304,14 @@ type ForStmt struct {
 	LoopBlock      Statement
 }
 
-func (f ForStmt) String() string {
-	return "for"
-}
-
 type WhileStmt struct {
 	Termination Expression
 	LoopBlock   Statement
 }
 
-func (w WhileStmt) String() string {
-	return fmt.Sprintf("while")
-}
-
 type DoWhileStmt struct {
 	Termination Expression
 	LoopBlock   Statement
-}
-
-func (d DoWhileStmt) String() string {
-	return fmt.Sprintf("do ... while")
 }
 
 type TryStmt struct {
@@ -494,27 +320,15 @@ type TryStmt struct {
 	CatchStmts   []*CatchStmt
 }
 
-func (t TryStmt) String() string {
-	return "try"
-}
-
 type CatchStmt struct {
 	CatchBlock *Block
 	CatchType  string
 	CatchVar   *Variable
 }
 
-func (c CatchStmt) String() string {
-	return fmt.Sprintf("catch %s %s", c.CatchType, c.CatchVar)
-}
-
 type Literal struct {
 	Type  Type
 	Value string
-}
-
-func (l Literal) String() string {
-	return fmt.Sprintf("Literal-%s: %s", l.Type, l.Value)
 }
 
 func (l Literal) EvaluatesTo() Type {
@@ -528,26 +342,14 @@ type ForeachStmt struct {
 	LoopBlock Statement
 }
 
-func (f ForeachStmt) String() string {
-	return "foreach"
-}
-
 type ArrayExpression struct {
 	ArrayType
 	Pairs []ArrayPair
 }
 
-func (a ArrayExpression) String() string {
-	return "array"
-}
-
 type ArrayPair struct {
 	Key   Expression
 	Value Expression
-}
-
-func (p ArrayPair) String() string {
-	return fmt.Sprintf("%s => %s", p.Key, p.Value)
 }
 
 func (a ArrayExpression) EvaluatesTo() Type {
@@ -561,10 +363,6 @@ func (a ArrayExpression) AssignableType() Type {
 type ArrayLookupExpression struct {
 	Array Expression
 	Index Expression
-}
-
-func (a ArrayLookupExpression) String() string {
-	return fmt.Sprintf("%s[", a.Array)
 }
 
 func (a ArrayLookupExpression) EvaluatesTo() Type {
@@ -587,16 +385,8 @@ func (a ArrayAppendExpression) AssignableType() Type {
 	return AnyType
 }
 
-func (a ArrayAppendExpression) String() string {
-	return a.Array.String() + "[]"
-}
-
 type ShellCommand struct {
 	Command string
-}
-
-func (s ShellCommand) String() string {
-	return fmt.Sprintf("`%s`", s.Command)
 }
 
 func (s ShellCommand) EvaluatesTo() Type {
@@ -613,30 +403,11 @@ func (l ListStatement) EvaluatesTo() Type {
 	return Array
 }
 
-func (l ListStatement) String() string {
-	return fmt.Sprintf("list(%s)", l.Assignees)
-}
-
 type StaticVariableDeclaration struct {
 	Declarations []Expression
-}
-
-func (s StaticVariableDeclaration) String() string {
-	buf := bytes.NewBufferString("static ")
-	for i, d := range s.Declarations {
-		if i > 0 {
-			buf.WriteString(",")
-		}
-		buf.WriteString(d.String())
-	}
-	return buf.String()
 }
 
 type DeclareBlock struct {
 	Statements   *Block
 	Declarations []string
-}
-
-func (d DeclareBlock) String() string {
-	return "declare{}"
 }
